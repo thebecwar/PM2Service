@@ -27,6 +27,9 @@
     <ClCompile Include="ServiceHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UserManagement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServiceManagement.h">
@@ -40,6 +43,9 @@
     </ClInclude>
     <ClInclude Include="Errors.mc">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserManagement.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

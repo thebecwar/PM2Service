@@ -173,16 +173,13 @@ bool SetStopped(DWORD exitCode)
 	return SetState(SERVICE_STOPPED, 0, exitCode, 0);
 }
 
-#include <iostream>
 HRESULT Start()
 {
     HRESULT hr = S_OK;
 	SC_HANDLE hSc = OpenSCManagerW(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-    std::wcout << L"SC Manager: 0x" << std::hex << std::uppercase << hSc << std::endl;
     if (hSc)
     {
         SC_HANDLE hService = OpenServiceW(hSc, SERVICE_NAME, SC_MANAGER_ALL_ACCESS);
-        std::wcout << L"Service: 0x" << std::hex << std::uppercase << hService << std::endl;
         if (hService) 
         {
             BOOL ok = StartServiceW(hService, 0, NULL);

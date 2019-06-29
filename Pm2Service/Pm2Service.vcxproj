@@ -179,12 +179,14 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
     <ClCompile Include="ServiceHandler.cpp" />
     <ClCompile Include="ServiceManagement.cpp" />
     <ClCompile Include="SystemEventLog.cpp" />
+    <ClCompile Include="UserManagement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Errors.mc" />
     <ClInclude Include="ServiceHandler.h" />
     <ClInclude Include="ServiceManagement.h" />
     <ClInclude Include="SystemEventLog.h" />
+    <ClInclude Include="UserManagement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
