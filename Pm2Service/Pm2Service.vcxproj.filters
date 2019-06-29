@@ -24,6 +24,9 @@
     <ClCompile Include="SystemEventLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ServiceHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServiceManagement.h">
@@ -31,6 +34,12 @@
     </ClInclude>
     <ClInclude Include="SystemEventLog.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Errors.mc">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

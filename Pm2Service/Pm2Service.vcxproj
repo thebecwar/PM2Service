@@ -96,6 +96,12 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>mc -U Errors.mc
+rc -r Errors.rc
+link -dll -noentry -machine:$(PlatformTarget) -out:PM2ServiceErrors.dll Errors.res
+xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -111,6 +117,12 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>mc -U Errors.mc
+rc -r Errors.rc
+link -dll -noentry -machine:$(PlatformTarget) -out:PM2ServiceErrors.dll Errors.res
+xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -130,6 +142,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>mc -U Errors.mc
+rc -r Errors.rc
+link -dll -noentry -machine:$(PlatformTarget) -out:PM2ServiceErrors.dll Errors.res
+xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -149,13 +167,22 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>mc -U Errors.mc
+rc -r Errors.rc
+link -dll -noentry -machine:$(PlatformTarget) -out:PM2ServiceErrors.dll Errors.res
+xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Pm2Service.cpp" />
+    <ClCompile Include="ServiceHandler.cpp" />
     <ClCompile Include="ServiceManagement.cpp" />
     <ClCompile Include="SystemEventLog.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Errors.mc" />
+    <ClInclude Include="ServiceHandler.h" />
     <ClInclude Include="ServiceManagement.h" />
     <ClInclude Include="SystemEventLog.h" />
   </ItemGroup>

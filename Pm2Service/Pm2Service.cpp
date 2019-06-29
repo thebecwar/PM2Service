@@ -5,6 +5,14 @@
 #include <string>
 #include "ServiceManagement.h"
 #include "SystemEventLog.h"
+#include "ServiceHandler.h"
+
+HANDLE waitHandle = NULL;
+void TestEventHandler(PVOID, BOOLEAN)
+{
+	UnregisterWait(waitHandle);
+	return;
+}
 
 int wmain(int argc, wchar_t** argv)
 {
@@ -14,9 +22,15 @@ int wmain(int argc, wchar_t** argv)
 		{
 			// Created Local User:
 			// fusion, 1qazXSW@
-			std::wstring path(argv[0]);
+			wchar_t szPath[MAX_PATH];
+			if(!GetModuleFileNameW(NULL, szPath, MAX_PATH))
+			{
+				printf("Cannot install service (%d)\n", GetLastError());
+				return 1;
+			}
+			std::wstring path(szPath);
 			path = path + L" run";
-
+			
 			if (argc < 3) 
 			{
 				std::wcout << L"Error Message TODO" << std::endl;
@@ -61,13 +75,63 @@ int wmain(int argc, wchar_t** argv)
 				LogError(L"Service Uninstallation Error", hr);
 			}
 		}
-		else if (_wcsicmp(argv[1], L"configure") == 0)
-		{
-		}
 		else if (_wcsicmp(argv[1], L"run") == 0)
 		{
 			LogInfo(L"Starting PM2 Service");
+			HRESULT hr = RunService();
+			if (hr != S_OK)
+			{
+				std::wcout << L"Service Start Error: " << hr << L" (0x" << std::hex << hr << L")" << std::endl;
+				LogError(L"Service Start Error", hr);
+			}
 		}
+        else if (_wcsicmp(argv[1], L"start") == 0)
+        {
+            HRESULT hr = Start();
+			if (hr != S_OK)
+			{
+				std::wcout << L"Service Start Error: " << hr << L" (0x" << std::hex << hr << L")" << std::endl;
+			}
+            else
+            {
+                std::wcout << L"Service Started Successfully" << std::endl;
+            }
+        }
+        else if (_wcsicmp(argv[1], L"stop") == 0)
+        {
+            HRESULT hr = Stop();
+			if (hr != S_OK)
+			{
+				std::wcout << L"Service Stop Error: " << hr << L" (0x" << std::hex << hr << L")" << std::endl;
+			}
+            else
+            {
+                std::wcout << L"Service Stopped Successfully" << std::endl;
+            }
+        }
+        else if (_wcsicmp(argv[1], L"restart") == 0)
+        {
+            HRESULT hr = Stop();
+            if (hr != ERROR_SERVICE_NOT_ACTIVE)
+            {
+				std::wcout << L"Service Stop Error: " << hr << L" (0x" << std::hex << hr << L")" << std::endl;
+                return;
+            }
+
+            hr = Start();
+			if (hr != S_OK)
+			{
+				std::wcout << L"Service Restart Error: " << hr << L" (0x" << std::hex << hr << L")" << std::endl;
+			}
+            else
+            {
+                std::wcout << L"Service Restarted Successfully" << std::endl;
+            }
+        }
+        else if (_wcsicmp(argv[1], L"config") == 0)
+        {
+
+        }
 	}
 	return 0;
 }
