@@ -220,6 +220,35 @@ int Config(int argc, const wchar_t** argv)
 {
     return 0;
 }
+const wchar_t* CheckUserShortHelp = L"Checks that a user has the appropriate permissions";
+const wchar_t* CheckUserLongHelp = LR"(
+Checks that a user has the appropriate permissions
+
+    usage: PM2Service checkuser username
+
+    - username: the name of the user to check
+)";
+int CheckUser(int argc, const wchar_t** argv)
+{
+    std::wstring username(argv[2]);
+    bool exists = VerifyUserExists(username);
+    if (!exists)
+    {
+        std::wcout << L"Specified user " << username << " does not exist." << std::endl;
+        return -1;
+    }
+    bool valid = VerifyUser(username);
+    if (!valid)
+    {
+        std::wcout << L"User " << username << " does not have permission to log in as a service." << std::endl;
+        return -1;
+    }
+    else
+    {
+        std::wcout << L"User " << username << " is valid." << std::endl;
+        return 0;
+    }
+}
 
 int Help(int argc, const wchar_t** argv);
 
@@ -232,6 +261,7 @@ CommandInfo AllCommands[] = {
     { L"restart", 0, RestartShortHelp, RestartLongHelp, Restart },
     { L"configaccount", 1, ConfigAccountShortHelp, ConfigAccountLongHelp, ConfigAccount },
     { L"config", 1, ConfigShortHelp, ConfigLongHelp, Config },
+    { L"checkuser", 1, CheckUserShortHelp, CheckUserLongHelp, CheckUser },
     { L"help", 0, L"Get information about a specific command with `help COMMAND`", nullptr, Help },
 };
 
@@ -246,6 +276,7 @@ int RunCommand(int argc, const wchar_t** argv)
                 if ((argc - 2) < AllCommands[i].minArgs)
                 {
                     std::wcout << AllCommands[i].longHelp << std::endl;
+                    return -1;
                 }
                 else
                 {
