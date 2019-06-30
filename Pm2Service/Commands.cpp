@@ -275,7 +275,14 @@ int RunCommand(int argc, const wchar_t** argv)
             {
                 if ((argc - 2) < AllCommands[i].minArgs)
                 {
-                    std::wcout << AllCommands[i].longHelp << std::endl;
+                    if (AllCommands[i].longHelp)
+                    {
+                        std::wcout << AllCommands[i].longHelp << std::endl;
+                    }
+                    else
+                    {
+                        std::wcout << AllCommands[i].shortHelp << std::endl;
+                    }
                     return -1;
                 }
                 else
@@ -296,7 +303,14 @@ int Help(int argc, const wchar_t** argv)
         {
             if (_wcsicmp(AllCommands[i].command, argv[2]) == 0)
             {
-                std::wcout << AllCommands[i].longHelp << std::endl;
+                if (AllCommands[i].longHelp)
+                {
+                    std::wcout << AllCommands[i].longHelp << std::endl;
+                }
+                else
+                {
+                    std::wcout << AllCommands[i].shortHelp << std::endl;
+                }
                 return 0;
             }
         }
