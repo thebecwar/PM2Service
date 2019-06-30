@@ -95,6 +95,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>pathcch.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>mc -U Errors.mc
@@ -116,6 +117,7 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>pathcch.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>mc -U Errors.mc
@@ -141,6 +143,7 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>pathcch.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>mc -U Errors.mc
@@ -166,6 +169,7 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>pathcch.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>mc -U Errors.mc
@@ -177,6 +181,7 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Pm2Service.cpp" />
+    <ClCompile Include="Process.cpp" />
     <ClCompile Include="ServiceHandler.cpp" />
     <ClCompile Include="ServiceManagement.cpp" />
     <ClCompile Include="SystemEventLog.cpp" />
@@ -185,6 +190,7 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="Commands.h" />
     <ClInclude Include="Errors.mc" />
+    <ClInclude Include="Process.h" />
     <ClInclude Include="ServiceHandler.h" />
     <ClInclude Include="ServiceManagement.h" />
     <ClInclude Include="SystemEventLog.h" />
