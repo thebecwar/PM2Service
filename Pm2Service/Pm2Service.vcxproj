@@ -180,6 +180,7 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Commands.cpp" />
+    <ClCompile Include="Pm2Helper.cpp" />
     <ClCompile Include="Pm2Service.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="ServiceHandler.cpp" />
@@ -190,6 +191,7 @@ xcopy /y "PM2ServiceErrors.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClInclude Include="Commands.h" />
     <ClInclude Include="Errors.mc" />
+    <ClInclude Include="Pm2Helper.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="ServiceHandler.h" />
     <ClInclude Include="ServiceManagement.h" />

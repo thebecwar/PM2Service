@@ -15,6 +15,7 @@
 #include "ServiceHandler.h"
 #include "UserManagement.h"
 #include "Process.h"
+#include "Pm2Helper.h"
 
 const wchar_t* InstallShortHelp = L"Install the service";
 const wchar_t* InstallLongHelp = LR"(
@@ -75,6 +76,27 @@ int Install(int argc, const wchar_t** argv)
         std::wcout << std::endl;
     }
 
+    // Test user account
+    HANDLE hLogin = NULL;
+    BOOL ok = LogonUserW(username.c_str(), NULL, password.c_str(), LOGON32_LOGON_SERVICE, LOGON32_PROVIDER_DEFAULT, &hLogin);
+    if (!ok)
+    {
+        size_t offset = username.find(L"\\");
+        std::wstring domainPart(username.substr(0, offset));
+        std::wstring unamePart(username.substr(offset + 1));
+        std::wcout << L"Username: " << unamePart << "  Domain: " << domainPart << std::endl;
+
+        ok = LogonUserW(unamePart.c_str(), domainPart.c_str(), password.c_str(), LOGON32_LOGON_SERVICE, LOGON32_PROVIDER_DEFAULT, &hLogin);
+        if (!ok)
+        {
+            std::wcout << L"Login failed for user" << unamePart << std::endl;
+            std::wcout << L"Error: " << GetLastError() << std::endl;
+            return -1;
+        }
+    }
+    CloseHandle(hLogin);
+
+    // Install the service
     HRESULT hr = InstallService(path, username, password);
     if (hr == S_OK)
     {
@@ -96,7 +118,7 @@ int Install(int argc, const wchar_t** argv)
 
     sharePath += L"\\PM2Service";
 
-    BOOL ok = CreateDirectoryW(sharePath.c_str(), NULL);
+    ok = CreateDirectoryW(sharePath.c_str(), NULL);
     int err = GetLastError();
     if (ok)
     {
@@ -412,21 +434,6 @@ int CheckUser(int argc, const wchar_t** argv)
 
 int Help(int argc, const wchar_t** argv);
 
-#include <vector>
-
-int TestEnv(int argc, const wchar_t** argv)
-{
-
-    std::vector<std::pair<std::wstring, std::wstring>> env;
-    env.emplace_back(std::pair<std::wstring, std::wstring>(L"TESTENVVAR", L"this is a test"));
-
-    std::wstring command(L"cmd.exe /c echo %TESTENVVAR%");
-    Process proc(command, env);
-    proc.StartProcess();
-    proc.StreamStdOut();
-
-    return 0;
-}
 
 CommandInfo AllCommands[] = {
     { L"install", 1, InstallShortHelp, InstallLongHelp, Install },
@@ -440,7 +447,6 @@ CommandInfo AllCommands[] = {
     { L"checkuser", 1, CheckUserShortHelp, CheckUserLongHelp, CheckUser },
     { L"setpm2version", 0, SetPm2VersionShortHelp, SetPm2VersionLongHelp, SetPM2Version },
     { L"listpm2versions", 0, ListPm2VersionsShortHelp, ListPm2VersionsLongHelp, ListPm2Versions },
-{ L"testenv", 0, NULL, NULL, TestEnv },
     { L"help", 0, L"Get information about a specific command with `help COMMAND`", nullptr, Help },
 };
 

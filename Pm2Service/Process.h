@@ -21,6 +21,7 @@ public:
     void StartProcess();
     void ReadStdOut(std::string& output);
     void StreamStdOut();
+    void Kill();
     bool Wait(int timeout);
 
 private:
@@ -30,6 +31,9 @@ private:
     HANDLE m_hStdInWrite;
     HANDLE m_hProcess;
     HANDLE m_hMainThread;
+
+    DWORD m_hProcPID;
+    DWORD m_hProcTID;
 
     LPWCH m_envBlock;
     LPWSTR m_commandLine;

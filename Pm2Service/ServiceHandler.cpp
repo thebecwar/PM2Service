@@ -1,6 +1,14 @@
 #include "ServiceHandler.h"
 #include "SystemEventLog.h"
 #include "ServiceManagement.h"
+#include "Process.h"
+#include "Pm2Helper.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <PathCch.h>
+#include <ShlObj.h>
+#include <AclAPI.h>
 
 // Code in here heavily based on: https://docs.microsoft.com/en-us/windows/desktop/Services/svc-cpp
 
@@ -102,8 +110,23 @@ VOID SvcInit( DWORD dwArgc, LPTSTR *lpszArgv)
         return;
     }
 
+    CoInitialize(NULL);
+    wchar_t* buf;
+    SHGetKnownFolderPath(FOLDERID_ProgramData, 0, NULL, &buf);
+    std::wstring pm2HomePath(buf);
+    CoTaskMemFree(buf);
+    pm2HomePath += L"\\PM2Service";
+
     // Start up the PM2 Process
-    
+    std::wstring args(L"resurrect --no-daemon");
+    std::wstring command;
+    BuildPm2Command(args, command);
+
+    std::vector<std::pair<std::wstring, std::wstring>> env;
+    env.emplace_back(std::pair<std::wstring, std::wstring>(L"PM2_HOME", pm2HomePath));
+
+    Process* proc = new Process(command, env);
+    proc->StartProcess();
 
     // Report running status when initialization is complete.
     bool ok = SetRunning();
@@ -119,16 +142,54 @@ VOID SvcInit( DWORD dwArgc, LPTSTR *lpszArgv)
     while(1)
     {
         // Check on our process
-        
-
-
+        bool done = proc->Wait(0);
+        if (done)
+        {
+            LogError(L"PM2 Process Unexpectedly Exited. Restarting", -1);
+            delete proc;
+            proc = new Process(command, env);
+            proc->StartProcess();
+        }
 
         // Check whether to stop the service.
         if (WaitForSingleObject(ghSvcStopEvent, 500) != WAIT_TIMEOUT) {
-            SetStopped(0);
-            return;
+            SetStopPending(0, 500);
+            break;
         }
     }
+
+    std::wstring killArgs(L"kill");
+    std::wstring killCmd;
+    BuildPm2Command(killArgs, killCmd);
+    Process killProc(killCmd, env);
+    killProc.StartProcess();
+
+    int timeout = 10000;
+    int checkpoint = 1;
+    bool done = killProc.Wait(500);
+    while (!done && timeout > 0)
+    {
+        SetStopPending(checkpoint++, 500);
+        timeout -= 500;
+        done = killProc.Wait(500);
+    }
+    if (!done)
+    {
+        killProc.Kill();
+    }
+
+    done = proc->Wait(1000);
+    if (!done)
+    {
+        LogWarning(L"PM2 Process did not exit cleanly on process shutdown.");
+        proc->Kill();
+    }
+    else
+    {
+        LogInfo(L"PM2 Process exited cleanly");
+    }
+
+    SetStopped(0);
 }
 
 //

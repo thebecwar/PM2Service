@@ -150,6 +150,8 @@ void Process::StartProcess()
 
     this->m_hProcess = pi.hProcess;
     this->m_hMainThread = pi.hThread;
+    this->m_hProcPID = pi.dwProcessId;
+    this->m_hProcTID = pi.dwThreadId;
 
 }
 void Process::ReadStdOut(std::string& output)
@@ -203,4 +205,8 @@ bool Process::Wait(int timeout)
         result = waitResult == WAIT_OBJECT_0;
     }
     return result;
+}
+void Process::Kill()
+{
+    TerminateProcess(this->m_hProcess, -1);
 }
