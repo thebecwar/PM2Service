@@ -1,0 +1,36 @@
+trigger:
+- master
+pool:
+  vmImage: 'vs2017-win2016'
+steps:
+- task: VSBuild@1
+  displayName: 'Build Pm2Service Binaries'
+  inputs:
+    solution: '**\Pm2Service.sln'
+    vsVersion: '15.0'
+    platform: 'x64'
+    configuration: 'Release'
+    clean: true
+    msbuildArchitecture: 'x64'
+    createLogFile: true
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: './x64/Release'
+    Contents: |
+      PM2ServiceErrors.dll
+      Pm2Service.exe
+      Pm2Service.pdb
+    TargetFolder: '$(Build.BinariesDirectory)'
+    CleanTargetFolder: true
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.BinariesDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(Build.BuildId)-nightly'
+    publishLocation: 'Container'
